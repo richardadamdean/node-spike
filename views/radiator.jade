@@ -1,0 +1,42 @@
+doctype 5
+html(lang="en")
+  head
+    title= pageTitle
+    link(href='/stylesheets/bootstrap.min.css', rel='stylesheet')
+    link(href='/stylesheets/app.css', rel='stylesheet')
+    link(href='/stylesheets/clearfix.css', rel='stylesheet')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
+    script(src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js')
+    script(src='/socket.io/socket.io.js')
+    script(type='text/javascript')
+      
+      // cache the template
+      jQuery.template("itemTemplate", 
+        '<li class="clearfix">'
+          +'<a href="${url}" class="clearfix">'
+            +'<div class="images">'
+              +'<img src="${vendorImage}" height="40" width="40"/>'
+              +'<img src="${image}" height="40" width="40"/>'
+            +'</div>'
+            +'<div class="body">'
+              +'${name} - ${text}'
+            +'</div>'
+          +'</a>'
+        +'</li>');
+
+      var socket = io.connect('http://localhost');
+      
+      socket.on('stream', function (data) {
+        
+          var newItems = jQuery.tmpl("itemTemplate", data).hide();
+          jQuery('#dius-stream').prepend(newItems);
+          newItems.fadeIn();
+          
+        //socket.emit('my other event', { my: 'data' });
+      });
+      
+  body
+    h1 Dius Radiator
+    header Send a tweet containing <strong>'diuscomputing'</strong> or post to Yammer
+    ul#dius-stream 
+      li Prepare to be amazed..
